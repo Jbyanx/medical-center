@@ -40,13 +40,9 @@ public class MedicoController {
     public ResponseEntity<DatosListadoMedico> getMedicoById(@PathVariable Long idMedico) {
         Optional<Medico> medico = medicoRepository.findById(idMedico);
 
-        if (medico.isPresent()) {
-            DatosListadoMedico datosMedico = new DatosListadoMedico(medico.get());
+        DatosListadoMedico datosMedico = new DatosListadoMedico(medico.get());
 
-            return ResponseEntity.ok(datosMedico);
-        } else{
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(datosMedico);
     }
 
     @PostMapping
@@ -96,13 +92,9 @@ public class MedicoController {
     public ResponseEntity<?> desactivateMedico(@PathVariable Long idMedico) {
         Optional<Medico> medicoToDesactivate = medicoRepository.findById(idMedico);
 
-        if (medicoToDesactivate.isPresent()) {
-            Medico medico = medicoToDesactivate.get();
+        Medico medico = medicoToDesactivate.get();
 
-            medico.desactivar();
-            return ResponseEntity.ok().build();
-        }else {
-            return ResponseEntity.notFound().build();
-        }
+        medico.desactivar();
+        return ResponseEntity.noContent().build();
     }
 }
