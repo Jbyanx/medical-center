@@ -7,17 +7,17 @@ import med.vol.api.entity.Especialidad;
 import med.vol.api.entity.Medico;
 
 public record DatosRegistroMedico(
-        @NotBlank
+        @NotBlank(message = "{nombre.obligatorio}")
         String nombre,
-        @Email @NotBlank
+        @Email(message = "{email.invalido}") @NotBlank(message = "{email.obligatorio}")
         String email,
-        @NotBlank
+        @NotBlank(message = "{documento.obligatorio}")
         String documento,
-        @NotBlank
+        @NotBlank(message = "{telefono.obligatorio}")
         String telefono,
-        @NotNull
+        @NotNull(message = "{especialidad.obligatorio}")
         Especialidad especialidad,
-        @NotNull
+        @NotNull(message = "{direccion.obligatorio}")
         DatosDireccion direccion
 ) {
     public DatosRegistroMedico(Medico medico) {
