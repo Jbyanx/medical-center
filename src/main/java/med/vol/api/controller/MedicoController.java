@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -38,9 +37,10 @@ public class MedicoController {
 
     @GetMapping("/{idMedico}")
     public ResponseEntity<DatosListadoMedico> getMedicoById(@PathVariable Long idMedico) {
-        Optional<Medico> medico = medicoRepository.findById(idMedico);
+        Medico medico = medicoRepository.findById(idMedico)
+                .orElseThrow();
 
-        DatosListadoMedico datosMedico = new DatosListadoMedico(medico.get());
+        DatosListadoMedico datosMedico = new DatosListadoMedico(medico);
 
         return ResponseEntity.ok(datosMedico);
     }
@@ -72,27 +72,14 @@ public class MedicoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    //ELIMINADO FISICO
-//    @DeleteMapping("/{idMedico}")
-//    @Transactional
-//    public ResponseEntity<?> deleteMedico(@PathVariable Long idMedico) {
-//        Optional<Medico> medicoToDelete = medicoRepository.findById(idMedico);
-//
-//        if (medicoToDelete.isPresent()) {
-//            medicoRepository.deleteById(idMedico);
-//            return ResponseEntity.ok().build();
-//        }else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-
     //eliminado logico
     @DeleteMapping("/{idMedico}")
     @Transactional
     public ResponseEntity<?> desactivateMedico(@PathVariable Long idMedico) {
-        Optional<Medico> medicoToDesactivate = medicoRepository.findById(idMedico);
+        Medico medicoToDesactivate = medicoRepository.findById(idMedico)
+                .orElseThrow();
 
-        Medico medico = medicoToDesactivate.get();
+        Medico medico = medicoToDesactivate;
 
         medico.desactivar();
         return ResponseEntity.noContent().build();

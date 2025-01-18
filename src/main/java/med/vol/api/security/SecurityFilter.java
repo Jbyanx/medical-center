@@ -4,8 +4,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import med.vol.api.dto.LoginUsuario;
-import med.vol.api.entity.Usuario;
 import med.vol.api.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,10 +16,14 @@ import java.io.IOException;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
+    private final TokenService tokenService;
+    private final UsuarioRepository usuarioRepository;
+
     @Autowired
-    private TokenService tokenService;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    public SecurityFilter(TokenService tokenService, UsuarioRepository usuarioRepository) {
+        this.tokenService = tokenService;
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -65,7 +67,6 @@ public class SecurityFilter extends OncePerRequestFilter {
             // Responder con un 401 Unauthorized y detener el flujo
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Error: Token inválido o acceso no autorizado.");
-            return; // Detener el flujo
         }
     }
 

@@ -5,13 +5,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.JWTVerifier;
-import jakarta.persistence.EntityNotFoundException;
-import med.vol.api.dto.LoginUsuario;
 import med.vol.api.entity.Usuario;
-import med.vol.api.repository.UsuarioRepository;
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -19,13 +15,10 @@ import org.springframework.util.StringUtils;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Optional;
 
 @Service
 public class TokenService {
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
+    private static final Logger log = LogManager.getLogger(TokenService.class);
     @Value("${api.security.secret}")
     private String  apiSecret;
 
@@ -63,7 +56,7 @@ public class TokenService {
                     .verify(token);
             subject = verifier.getSubject();
         } catch (JWTVerificationException exception){
-            System.out.println(exception);
+            log.error("e: ", exception);
         }
 
         if(subject == null){
